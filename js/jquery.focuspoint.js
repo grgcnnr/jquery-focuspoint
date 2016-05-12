@@ -15,8 +15,7 @@
 
 	//Setup a container instance
 	var setupContainer = function($el) {
-		var imageSrc = $el.find('img').attr('src');
-		$el.data('imageSrc', imageSrc);
+		var imageSrc = getSrc($el);
 
 		resolveImageSize(imageSrc, function(err, dim) {
 			$el.data({
@@ -26,6 +25,12 @@
 			adjustFocus($el);
 		});
 	};
+
+	var getSrc = function($el) {
+		var imageSrc = $el.find('img').attr('currentSrc');
+		imageSrc = imageSrc ? imageSrc : $el.find('img').attr('src');
+		return imageSrc;
+	}
 
 	//Get the width and the height of an image
 	//by creating a new temporary image
@@ -74,17 +79,27 @@
 	};
 
 	//Re-adjust the focus
-	var adjustFocus = function($el) {
+	var adjustFocus = function($el, hardRefresh) {
+		if (hardRefresh) {
+			$el.data('imageW', $el.attr('data-image-w'));
+			$el.data('imageH', $el.attr('data-image-h'));
+
+			$el.data('focusX', $el.attr('data-focus-x'));
+			$el.data('focusY', $el.attr('data-focus-y'));
+		}
+
 		var imageW = $el.data('imageW');
 		var imageH = $el.data('imageH');
-		var imageSrc = $el.data('imageSrc');
+		var imageSrc = getSrc($el);
 
-		if (!imageW && !imageH && !imageSrc) {
+		//if something is missing, setup the container and run again but this time not hard.
+		if (hardRefresh || !imageW && !imageH && !imageSrc) {
 			return setupContainer($el); //Setup the container first
 		}
 
 		var containerW = $el.width();
 		var containerH = $el.height();
+
 		var focusX = parseFloat($el.data('focusX'));
 		var focusY = parseFloat($el.data('focusY'));
 		var $image = $el.find('img').first();
@@ -137,8 +152,8 @@
 		//Expose a public API
 		return {
 
-			adjustFocus: function() {
-				return adjustFocus($el);
+			adjustFocus: function(hardRefresh) {
+				return adjustFocus($el, hardRefresh);
 			},
 
 			windowOn: function() {
