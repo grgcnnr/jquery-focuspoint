@@ -81,6 +81,9 @@
 	//Re-adjust the focus
 	var adjustFocus = function($el, hardRefresh) {
 		if (hardRefresh) {
+
+			// console.log('adjustFocus::hardRefresh');
+
 			$el.data('imageW', $el.attr('data-image-w'));
 			$el.data('imageH', $el.attr('data-image-h'));
 
@@ -90,15 +93,25 @@
 
 		var imageW = $el.data('imageW');
 		var imageH = $el.data('imageH');
+
+		// console.log('adjustFocus::imageW', imageW);
+
 		var imageSrc = getSrc($el);
 
 		//if something is missing, setup the container and run again but this time not hard.
-		if (hardRefresh || !imageW && !imageH && !imageSrc) {
-			return setupContainer($el); //Setup the container first
+
+		if (!imageW && !imageH && !imageSrc) {
+			console.warn('some major bit of info is missing:', imageW, imageH, imageSrc);
+			// Running setupContainer causes issues with 2x images since their size is reported wrong
+			// At the moment we are setting all image sizes explicitly anyway so this
+			// is just another http call we dont need.
+			// return setupContainer($el); //Setup the container first
 		}
 
 		var containerW = $el.width();
 		var containerH = $el.height();
+
+		// console.log('adjustFocus::containerW', containerW);
 
 		var focusX = parseFloat($el.data('focusX'));
 		var focusY = parseFloat($el.data('focusY'));
