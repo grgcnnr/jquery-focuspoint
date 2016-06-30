@@ -1,5 +1,7 @@
 # jQuery FocusPoint
 
+# forked from jonom/jquery-focuspoint and adaped to handle <picture> elements of various sizes in KarbonHQ.com ediitons.
+
 ## Intelligent cropping for flexible image containers
 
 ![image](demos/img/demo.jpg?raw=true)
