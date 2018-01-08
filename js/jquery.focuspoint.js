@@ -27,6 +27,7 @@
 	};
 
 	var getSrc = function($el) {
+		if (! $el.find('img').length) return false;
 		var imageSrc = $el.find('img')[0].currentSrc;
 		imageSrc = imageSrc ? imageSrc : $el.find('img').attr('src');
 		return imageSrc;
